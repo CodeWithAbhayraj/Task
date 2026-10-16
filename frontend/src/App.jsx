@@ -50,6 +50,7 @@ function App() {
 
   const pending = tasks.length - completed;
 
+  
   function addTask(e) {
     e.preventDefault();
 
