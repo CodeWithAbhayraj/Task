@@ -48,7 +48,7 @@ function App() {
     (task) => task.status === "Completed"
   ).length;
 
-  
+
   const pending = tasks.length - completed;
 
   function addTask(e) {
