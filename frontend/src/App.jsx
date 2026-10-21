@@ -263,6 +263,7 @@ function App() {
             </div>
           </div>
 
+
           <div className="task-list">
             {filteredTasks.length === 0 ? (
               <div className="empty-state">
@@ -301,6 +302,7 @@ function App() {
                     <p>{task.description || "No description"}</p>
                   </div>
 
+
                   <div className="task-badges">
                     <span
                       className={`priority-badge ${task.priority.toLowerCase()}`}
@@ -315,6 +317,7 @@ function App() {
                       {task.status}
                     </span>
                   </div>
+
 
                   <button
                     className="delete-button"
