@@ -372,10 +372,12 @@ button {
   transition: background 0.2s, transform 0.2s;
 }
 
+
 .primary-button:hover {
   background: #5c4bd4;
   transform: translateY(-1px);
 }
+
 
 .task-toolbar {
   display: flex;
