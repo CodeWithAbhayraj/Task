@@ -220,7 +220,6 @@ function App() {
               rows="2"
             />
 
-
             <div className="form-footer">
               <select
                 value={priority}
