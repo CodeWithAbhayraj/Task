@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   CheckCircle2,
@@ -10,69 +10,136 @@ import {
   Trash2,
   Check,
   Circle,
+  Pencil,
+  X,
 } from "lucide-react";
 import "./App.css";
 
-function App() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Learn React fundamentals",
-      description: "Understand components and hooks",
-      status: "Pending",
-      priority: "High",
-    },
-    {
-      id: 2,
-      title: "Build Task Manager UI",
-      description: "Create a clean dashboard",
-      status: "Completed",
-      priority: "Medium",
-    },
-    {
-      id: 3,
-      title: "Learn Node.js",
-      description: "Start learning backend development",
-      status: "Pending",
-      priority: "Low",
-    },
-  ]);
+const INITIAL_TASKS = [
+  {
+    id: 1,
+    title: "Learn React fundamentals",
+    description: "Understand components and hooks",
+    status: "Pending",
+    priority: "High",
+  },
+  {
+    id: 2,
+    title: "Build Task Manager UI",
+    description: "Create a clean dashboard",
+    status: "Completed",
+    priority: "Medium",
+  },
+  {
+    id: 3,
+    title: "Learn Node.js",
+    description: "Start learning backend development",
+    status: "Pending",
+    priority: "Low",
+  },
+];
 
+function getSavedTasks() {
+  try {
+    const savedTasks = localStorage.getItem("taskflow-tasks");
+
+    if (savedTasks !== null) {
+      const parsedTasks = JSON.parse(savedTasks);
+
+      if (Array.isArray(parsedTasks)) {
+        return parsedTasks;
+      }
+    }
+  } catch (error) {
+    console.error("Could not load saved tasks:", error);
+  }
+
+  return INITIAL_TASKS;
+}
+
+function App() {
+  const [tasks, setTasks] = useState(getSavedTasks);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("Medium");
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
+  const [editingTaskId, setEditingTaskId] = useState(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("taskflow-tasks", JSON.stringify(tasks));
+    } catch (error) {
+      console.error("Could not save tasks:", error);
+    }
+  }, [tasks]);
 
   const completed = tasks.filter(
     (task) => task.status === "Completed"
   ).length;
 
-
   const pending = tasks.length - completed;
+
+  function resetForm() {
+    setTitle("");
+    setDescription("");
+    setPriority("Medium");
+    setEditingTaskId(null);
+  }
 
   function addTask(e) {
     e.preventDefault();
 
-    if (!title.trim()) return;
+    const trimmedTitle = title.trim();
 
-    const newTask = {
-      id: Date.now(),
-      title: title.trim(),
-      description: description.trim(),
-      status: "Pending",
-      priority,
-    };
+    if (!trimmedTitle) return;
 
-    setTasks((prev) => [newTask, ...prev]);
-    setTitle("");
-    setDescription("");
-    setPriority("Medium");
+    if (editingTaskId !== null) {
+      setTasks((previousTasks) =>
+        previousTasks.map((task) =>
+          task.id === editingTaskId
+            ? {
+                ...task,
+                title: trimmedTitle,
+                description: description.trim(),
+                priority,
+              }
+            : task
+        )
+      );
+    } else {
+      const newTask = {
+        id: Date.now(),
+        title: trimmedTitle,
+        description: description.trim(),
+        status: "Pending",
+        priority,
+      };
+
+      setTasks((previousTasks) => [
+        newTask,
+        ...previousTasks,
+      ]);
+    }
+
+    resetForm();
+  }
+
+  function editTask(task) {
+    setEditingTaskId(task.id);
+    setTitle(task.title);
+    setDescription(task.description);
+    setPriority(task.priority);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }
 
   function toggleTask(id) {
-    setTasks((prev) =>
-      prev.map((task) =>
+    setTasks((previousTasks) =>
+      previousTasks.map((task) =>
         task.id === id
           ? {
               ...task,
@@ -87,16 +154,26 @@ function App() {
   }
 
   function deleteTask(id) {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+    setTasks((previousTasks) =>
+      previousTasks.filter((task) => task.id !== id)
+    );
+
+    if (editingTaskId === id) {
+      resetForm();
+    }
   }
 
   const filteredTasks = tasks.filter((task) => {
     const matchesFilter =
       filter === "All" || task.status === filter;
 
+    const searchText = search.trim().toLowerCase();
+
     const matchesSearch =
-      task.title.toLowerCase().includes(search.toLowerCase()) ||
-      task.description.toLowerCase().includes(search.toLowerCase());
+      task.title.toLowerCase().includes(searchText) ||
+      (task.description || "")
+        .toLowerCase()
+        .includes(searchText);
 
     return matchesFilter && matchesSearch;
   });
@@ -152,10 +229,15 @@ function App() {
 
         <section className="welcome-section">
           <div>
-            <p className="welcome-tag">YOUR PRODUCTIVITY SPACE</p>
+            <p className="welcome-tag">
+              YOUR PRODUCTIVITY SPACE
+            </p>
             <h2>Make today count.</h2>
-            <p>Small steps every day lead to big results.</p>
+            <p>
+              Small steps every day lead to big results.
+            </p>
           </div>
+
           <div className="welcome-art">
             <CheckCircle2 size={82} strokeWidth={1.2} />
           </div>
@@ -196,13 +278,25 @@ function App() {
               <h2>My Tasks</h2>
               <p>Manage your daily activities</p>
             </div>
-            <span className="task-count">{tasks.length} tasks</span>
+
+            <span className="task-count">
+              {tasks.length} tasks
+            </span>
           </div>
 
           <form className="add-task-form" onSubmit={addTask}>
             <div className="form-heading">
-              <Plus size={19} />
-              <h3>Add a new task</h3>
+              {editingTaskId !== null ? (
+                <Pencil size={19} />
+              ) : (
+                <Plus size={19} />
+              )}
+
+              <h3>
+                {editingTaskId !== null
+                  ? "Edit your task"
+                  : "Add a new task"}
+              </h3>
             </div>
 
             <input
@@ -217,7 +311,7 @@ function App() {
               placeholder="Add a description (optional)"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              rows="2"
+              rows={2}
             />
 
             <div className="form-footer">
@@ -231,16 +325,40 @@ function App() {
                 <option value="High">High priority</option>
               </select>
 
-              <button className="primary-button" type="submit">
-                <Plus size={17} />
-                Add Task
-              </button>
+              <div className="form-actions">
+                {editingTaskId !== null && (
+                  <button
+                    className="cancel-button"
+                    type="button"
+                    onClick={resetForm}
+                  >
+                    <X size={17} />
+                    Cancel
+                  </button>
+                )}
+
+                <button
+                  className="primary-button"
+                  type="submit"
+                >
+                  {editingTaskId !== null ? (
+                    <Check size={17} />
+                  ) : (
+                    <Plus size={17} />
+                  )}
+
+                  {editingTaskId !== null
+                    ? "Update Task"
+                    : "Add Task"}
+                </button>
+              </div>
             </div>
           </form>
 
           <div className="task-toolbar">
             <div className="search-box">
               <Search size={18} />
+
               <input
                 type="search"
                 placeholder="Search tasks..."
@@ -253,7 +371,11 @@ function App() {
               {["All", "Pending", "Completed"].map((item) => (
                 <button
                   key={item}
-                  className={filter === item ? "filter active-filter" : "filter"}
+                  className={
+                    filter === item
+                      ? "filter active-filter"
+                      : "filter"
+                  }
                   onClick={() => setFilter(item)}
                   type="button"
                 >
@@ -263,24 +385,32 @@ function App() {
             </div>
           </div>
 
-
           <div className="task-list">
             {filteredTasks.length === 0 ? (
               <div className="empty-state">
                 <ListTodo size={35} />
                 <h3>No tasks found</h3>
-                <p>Add a task or change your search/filter.</p>
+                <p>
+                  Add a task or change your search/filter.
+                </p>
               </div>
             ) : (
               filteredTasks.map((task) => (
-                <article className="task-card" key={task.id}>
+                <article
+                  className="task-card"
+                  key={task.id}
+                >
                   <button
                     className={`complete-button ${
-                      task.status === "Completed" ? "is-complete" : ""
+                      task.status === "Completed"
+                        ? "is-complete"
+                        : ""
                     }`}
                     onClick={() => toggleTask(task.id)}
                     aria-label={`Mark ${task.title} as ${
-                      task.status === "Completed" ? "pending" : "completed"
+                      task.status === "Completed"
+                        ? "pending"
+                        : "completed"
                     }`}
                     type="button"
                   >
@@ -294,14 +424,18 @@ function App() {
                   <div className="task-info">
                     <h3
                       className={
-                        task.status === "Completed" ? "completed-title" : ""
+                        task.status === "Completed"
+                          ? "completed-title"
+                          : ""
                       }
                     >
                       {task.title}
                     </h3>
-                    <p>{task.description || "No description"}</p>
-                  </div>
 
+                    <p>
+                      {task.description || "No description"}
+                    </p>
+                  </div>
 
                   <div className="task-badges">
                     <span
@@ -309,15 +443,26 @@ function App() {
                     >
                       {task.priority}
                     </span>
+
                     <span
                       className={`status-badge ${
-                        task.status === "Completed" ? "done" : "pending"
+                        task.status === "Completed"
+                          ? "done"
+                          : "pending"
                       }`}
                     >
                       {task.status}
                     </span>
                   </div>
 
+                  <button
+                    className="edit-button"
+                    onClick={() => editTask(task)}
+                    aria-label={`Edit ${task.title}`}
+                    type="button"
+                  >
+                    <Pencil size={18} />
+                  </button>
 
                   <button
                     className="delete-button"
