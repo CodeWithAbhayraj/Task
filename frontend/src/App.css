@@ -776,3 +776,35 @@ button { cursor: pointer; }
     transition: none !important;
   }
 }
+
+/* Sidebar navigation button fix */
+button.nav-item {
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 12px 14px;
+  color: var(--text-soft);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+button.nav-item:hover {
+  background: var(--surface-soft);
+  color: var(--primary);
+}
+
+button.nav-item.active {
+  background: var(--primary-soft);
+  color: var(--primary);
+}

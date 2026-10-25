@@ -65,6 +65,7 @@ function App() {
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
   const [editingTaskId, setEditingTaskId] = useState(null);
+  const [activePage, setActivePage] = useState("Dashboard");
 
   useEffect(() => {
     try {
@@ -128,8 +129,10 @@ function App() {
   function editTask(task) {
     setEditingTaskId(task.id);
     setTitle(task.title);
-    setDescription(task.description);
+    setDescription(task.description || "");
     setPriority(task.priority);
+    setActivePage("Dashboard");
+    setFilter("All");
 
     window.scrollTo({
       top: 0,
@@ -163,6 +166,19 @@ function App() {
     }
   }
 
+  function navigateTo(page) {
+    setActivePage(page);
+    setSearch("");
+
+    if (page === "Dashboard") {
+      setFilter("All");
+    } else if (page === "My Tasks") {
+      setFilter("Pending");
+    } else {
+      setFilter("Completed");
+    }
+  }
+
   const filteredTasks = tasks.filter((task) => {
     const matchesFilter =
       filter === "All" || task.status === filter;
@@ -190,20 +206,38 @@ function App() {
 
         <p className="menu-label">WORKSPACE</p>
 
-        <div className="nav-item active">
+        <button
+          type="button"
+          className={`nav-item ${
+            activePage === "Dashboard" ? "active" : ""
+          }`}
+          onClick={() => navigateTo("Dashboard")}
+        >
           <LayoutDashboard size={19} />
           <span>Dashboard</span>
-        </div>
+        </button>
 
-        <div className="nav-item">
+        <button
+          type="button"
+          className={`nav-item ${
+            activePage === "My Tasks" ? "active" : ""
+          }`}
+          onClick={() => navigateTo("My Tasks")}
+        >
           <ListTodo size={19} />
           <span>My Tasks</span>
-        </div>
+        </button>
 
-        <div className="nav-item">
+        <button
+          type="button"
+          className={`nav-item ${
+            activePage === "Completed" ? "active" : ""
+          }`}
+          onClick={() => navigateTo("Completed")}
+        >
           <CheckCircle2 size={19} />
           <span>Completed</span>
-        </div>
+        </button>
 
         <div className="sidebar-bottom">
           <div className="profile-avatar">A</div>
@@ -218,7 +252,11 @@ function App() {
         <header className="topbar">
           <div>
             <p className="eyebrow">MY WORKSPACE</p>
-            <h1>My Dashboard</h1>
+            <h1>
+              {activePage === "Dashboard"
+                ? "My Dashboard"
+                : activePage}
+            </h1>
           </div>
 
           <div className="date-label">
@@ -227,133 +265,149 @@ function App() {
           </div>
         </header>
 
-        <section className="welcome-section">
-          <div>
-            <p className="welcome-tag">
-              YOUR PRODUCTIVITY SPACE
-            </p>
-            <h2>Make today count.</h2>
-            <p>
-              Small steps every day lead to big results.
-            </p>
-          </div>
-
-          <div className="welcome-art">
-            <CheckCircle2 size={82} strokeWidth={1.2} />
-          </div>
-        </section>
-
-        <section className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon purple">
-              <ListTodo size={22} />
+        {activePage === "Dashboard" && (
+          <section className="welcome-section">
+            <div>
+              <p className="welcome-tag">
+                YOUR PRODUCTIVITY SPACE
+              </p>
+              <h2>Make today count.</h2>
+              <p>
+                Small steps every day lead to big results.
+              </p>
             </div>
-            <p>Total Tasks</p>
-            <h3>{tasks.length}</h3>
-            <span>All your tasks</span>
-          </div>
 
-          <div className="stat-card">
-            <div className="stat-icon orange">
-              <Clock size={22} />
+            <div className="welcome-art">
+              <CheckCircle2 size={82} strokeWidth={1.2} />
             </div>
-            <p>Pending Tasks</p>
-            <h3>{pending}</h3>
-            <span>Waiting to be done</span>
-          </div>
+          </section>
+        )}
 
-          <div className="stat-card">
-            <div className="stat-icon green">
-              <CheckCircle2 size={22} />
+        {activePage === "Dashboard" && (
+          <section className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-icon purple">
+                <ListTodo size={22} />
+              </div>
+              <p>Total Tasks</p>
+              <h3>{tasks.length}</h3>
+              <span>All your tasks</span>
             </div>
-            <p>Completed</p>
-            <h3>{completed}</h3>
-            <span>Great work!</span>
-          </div>
-        </section>
+
+            <div className="stat-card">
+              <div className="stat-icon orange">
+                <Clock size={22} />
+              </div>
+              <p>Pending Tasks</p>
+              <h3>{pending}</h3>
+              <span>Waiting to be done</span>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-icon green">
+                <CheckCircle2 size={22} />
+              </div>
+              <p>Completed</p>
+              <h3>{completed}</h3>
+              <span>Great work!</span>
+            </div>
+          </section>
+        )}
 
         <section className="task-section">
           <div className="section-heading">
             <div>
-              <h2>My Tasks</h2>
-              <p>Manage your daily activities</p>
+              <h2>
+                {activePage === "Dashboard"
+                  ? "My Tasks"
+                  : activePage}
+              </h2>
+              <p>
+                {activePage === "Completed"
+                  ? "Tasks you have finished"
+                  : activePage === "My Tasks"
+                    ? "Tasks waiting to be completed"
+                    : "Manage your daily activities"}
+              </p>
             </div>
 
             <span className="task-count">
-              {tasks.length} tasks
+              {filteredTasks.length} tasks
             </span>
           </div>
 
-          <form className="add-task-form" onSubmit={addTask}>
-            <div className="form-heading">
-              {editingTaskId !== null ? (
-                <Pencil size={19} />
-              ) : (
-                <Plus size={19} />
-              )}
-
-              <h3>
-                {editingTaskId !== null
-                  ? "Edit your task"
-                  : "Add a new task"}
-              </h3>
-            </div>
-
-            <input
-              type="text"
-              placeholder="What do you need to do?"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-
-            <textarea
-              placeholder="Add a description (optional)"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={2}
-            />
-
-            <div className="form-footer">
-              <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value)}
-                aria-label="Task priority"
-              >
-                <option value="Low">Low priority</option>
-                <option value="Medium">Medium priority</option>
-                <option value="High">High priority</option>
-              </select>
-
-              <div className="form-actions">
-                {editingTaskId !== null && (
-                  <button
-                    className="cancel-button"
-                    type="button"
-                    onClick={resetForm}
-                  >
-                    <X size={17} />
-                    Cancel
-                  </button>
+          {activePage !== "Completed" && (
+            <form className="add-task-form" onSubmit={addTask}>
+              <div className="form-heading">
+                {editingTaskId !== null ? (
+                  <Pencil size={19} />
+                ) : (
+                  <Plus size={19} />
                 )}
 
-                <button
-                  className="primary-button"
-                  type="submit"
+                <h3>
+                  {editingTaskId !== null
+                    ? "Edit your task"
+                    : "Add a new task"}
+                </h3>
+              </div>
+
+              <input
+                type="text"
+                placeholder="What do you need to do?"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+
+              <textarea
+                placeholder="Add a description (optional)"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={2}
+              />
+
+              <div className="form-footer">
+                <select
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value)}
+                  aria-label="Task priority"
                 >
-                  {editingTaskId !== null ? (
-                    <Check size={17} />
-                  ) : (
-                    <Plus size={17} />
+                  <option value="Low">Low priority</option>
+                  <option value="Medium">Medium priority</option>
+                  <option value="High">High priority</option>
+                </select>
+
+                <div className="form-actions">
+                  {editingTaskId !== null && (
+                    <button
+                      className="cancel-button"
+                      type="button"
+                      onClick={resetForm}
+                    >
+                      <X size={17} />
+                      Cancel
+                    </button>
                   )}
 
-                  {editingTaskId !== null
-                    ? "Update Task"
-                    : "Add Task"}
-                </button>
+                  <button
+                    className="primary-button"
+                    type="submit"
+                  >
+                    {editingTaskId !== null ? (
+                      <Check size={17} />
+                    ) : (
+                      <Plus size={17} />
+                    )}
+
+                    {editingTaskId !== null
+                      ? "Update Task"
+                      : "Add Task"}
+                  </button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          )}
 
           <div className="task-toolbar">
             <div className="search-box">
@@ -367,22 +421,24 @@ function App() {
               />
             </div>
 
-            <div className="filter-buttons">
-              {["All", "Pending", "Completed"].map((item) => (
-                <button
-                  key={item}
-                  className={
-                    filter === item
-                      ? "filter active-filter"
-                      : "filter"
-                  }
-                  onClick={() => setFilter(item)}
-                  type="button"
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
+            {activePage === "Dashboard" && (
+              <div className="filter-buttons">
+                {["All", "Pending", "Completed"].map((item) => (
+                  <button
+                    key={item}
+                    className={
+                      filter === item
+                        ? "filter active-filter"
+                        : "filter"
+                    }
+                    onClick={() => setFilter(item)}
+                    type="button"
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="task-list">
