@@ -1009,7 +1009,6 @@ button.nav-item.active {
   .search-box input,
   .form-footer select { font-size: 16px; }
 }
-
 @media (max-width: 400px) {
   .welcome-art { display: none; }
   .stats-grid { grid-template-columns: 1fr; }
