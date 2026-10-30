@@ -210,7 +210,6 @@ function App() {
     }, 450);
   }
 
-  
   function editTask(task) {
     setEditingTaskId(task.id);
     setTitle(task.title);
