@@ -24,6 +24,7 @@ app.get("/api/health", (req, res) => {
     message: "Backend API is working correctly",
   });
 });
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
