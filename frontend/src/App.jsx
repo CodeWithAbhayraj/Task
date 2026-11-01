@@ -209,7 +209,6 @@ function App() {
       showToast(wasEditing ? "Task updated successfully." : "Task added successfully.");
     }, 450);
   }
-
   function editTask(task) {
     setEditingTaskId(task.id);
     setTitle(task.title);
