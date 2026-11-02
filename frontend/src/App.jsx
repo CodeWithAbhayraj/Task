@@ -218,7 +218,6 @@ function App() {
     setSubmitted(false);
     setActivePage("Dashboard");
     setFilter("All");
-
     window.scrollTo({
       top: 0,
       behavior: "smooth",
