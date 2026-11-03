@@ -225,7 +225,6 @@ function App() {
 
     setTimeout(() => titleInputRef.current?.focus(), 300);
   }
-
   function toggleTask(id) {
     const target = tasks.find((task) => task.id === id);
     const nowCompleted = target?.status !== "Completed";
@@ -243,7 +242,6 @@ function App() {
 
     showToast(nowCompleted ? "Nice! Task completed." : "Task moved back to pending.");
   }
-
   function deleteTask(id) {
     setTasks((previousTasks) =>
       previousTasks.filter((task) => task.id !== id)
@@ -255,7 +253,6 @@ function App() {
 
     showToast("Task deleted.", "info");
   }
-
   function navigateTo(page) {
     setActivePage(page);
     setSearch("");
@@ -268,7 +265,6 @@ function App() {
       setFilter("Completed");
     }
   }
-
   const filteredTasks = tasks.filter((task) => {
     const matchesFilter = filter === "All" || task.status === filter;
 
@@ -332,7 +328,6 @@ function App() {
       </div>
     );
   }
-
   return (
     <div className="app-layout">
       <aside className="sidebar">
