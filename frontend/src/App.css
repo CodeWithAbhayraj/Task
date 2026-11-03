@@ -998,7 +998,6 @@ button.nav-item.active {
     justify-content: flex-start;
   }
   .task-actions { margin-left: auto; }
-
   /* toast spans the bottom on phones */
   .toast-region { left: 12px; right: 12px; bottom: 12px; }
   .toast { max-width: none; width: 100%; }
@@ -1013,12 +1012,12 @@ button.nav-item.active {
   .welcome-art { display: none; }
   .stats-grid { grid-template-columns: 1fr; }
 }
-
 @media (max-width: 360px) {
   .main-content { padding: 18px 10px; }
   .task-section { padding: 14px 10px; }
   .welcome-section h2 { font-size: 21px; }
 }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation: none !important;
