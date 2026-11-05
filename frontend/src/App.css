@@ -997,7 +997,6 @@ button.nav-item.active {
     margin-left: 38px;
     justify-content: flex-start;
   }
-  
   .task-actions { margin-left: auto; }
   /* toast spans the bottom on phones */
   .toast-region { left: 12px; right: 12px; bottom: 12px; }
