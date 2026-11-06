@@ -548,7 +548,7 @@ function App() {
                       Cancel
                     </button>
                   )}
-                  
+                
                   <button
                     className="primary-button"
                     type="submit"
@@ -692,7 +692,6 @@ function App() {
         </footer>
       </main>
 
-
       {/* Toast feedback */}
       <div className="toast-region" role="status" aria-live="polite">
         {toast && (
@@ -707,7 +706,6 @@ function App() {
               onClick={() => setToast(null)}
               aria-label="Dismiss notification"
             >
-
               <X size={15} />
             </button>
           </div>
