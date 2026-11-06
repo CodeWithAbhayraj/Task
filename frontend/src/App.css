@@ -997,6 +997,7 @@ button.nav-item.active {
     margin-left: 38px;
     justify-content: flex-start;
   }
+
   .task-actions { margin-left: auto; }
   /* toast spans the bottom on phones */
   .toast-region { left: 12px; right: 12px; bottom: 12px; }
@@ -1008,6 +1009,7 @@ button.nav-item.active {
   .search-box input,
   .form-footer select { font-size: 16px; }
 }
+
 @media (max-width: 400px) {
   .welcome-art { display: none; }
   .stats-grid { grid-template-columns: 1fr; }
@@ -1023,5 +1025,6 @@ button.nav-item.active {
     animation: none !important;
     transition: none !important;
   }
+  
 }
 
