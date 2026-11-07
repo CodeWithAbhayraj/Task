@@ -691,7 +691,6 @@ function App() {
           Made for better days <span>♥</span> Keep moving forward.
         </footer>
       </main>
-
       {/* Toast feedback */}
       <div className="toast-region" role="status" aria-live="polite">
         {toast && (
