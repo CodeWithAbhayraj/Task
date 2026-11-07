@@ -705,7 +705,7 @@ function App() {
               onClick={() => setToast(null)}
               aria-label="Dismiss notification"
             >
-              <X size={15} />
+             <X size={15} />
             </button>
           </div>
         )}
