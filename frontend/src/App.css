@@ -977,7 +977,6 @@ button.nav-item.active {
     flex-direction: column;
     align-items: stretch;
   }
-
   .form-footer select { width: 100%; }
 
   .form-actions { width: 100%; }
@@ -988,7 +987,6 @@ button.nav-item.active {
   .complete-button,
   .edit-button,
   .delete-button { min-width: 40px; min-height: 40px; }
-
   /* task card: info grows, actions at the end, badges drop below */
   .task-info { flex: 1; flex-basis: 0; }
   .task-badges {
@@ -997,7 +995,6 @@ button.nav-item.active {
     margin-left: 38px;
     justify-content: flex-start;
   }
-
   .task-actions { margin-left: auto; }
   /* toast spans the bottom on phones */
   .toast-region { left: 12px; right: 12px; bottom: 12px; }
@@ -1009,7 +1006,6 @@ button.nav-item.active {
   .search-box input,
   .form-footer select { font-size: 16px; }
 }
-
 @media (max-width: 400px) {
   .welcome-art { display: none; }
   .stats-grid { grid-template-columns: 1fr; }
@@ -1019,7 +1015,6 @@ button.nav-item.active {
   .task-section { padding: 14px 10px; }
   .welcome-section h2 { font-size: 21px; }
 }
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation: none !important;
