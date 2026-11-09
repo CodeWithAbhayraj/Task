@@ -982,7 +982,6 @@ button.nav-item.active {
   .form-actions { width: 100%; }
   .form-actions .primary-button,
   .form-actions .cancel-button { flex: 1; }
-
   /* tap targets >= 40px */
   .complete-button,
   .edit-button,
