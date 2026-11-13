@@ -1,6 +1,7 @@
+
 const dns = require("dns");
 
-// Use Google and Cloudflare DNS
+// DNS configuration
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 const express = require("express");
@@ -8,13 +9,15 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+const taskRoutes = require("./routes/taskRoutes");
+
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Home route
+// Home Route
 app.get("/", (req, res) => {
   res.json({
     success: true,
@@ -22,7 +25,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Health check API
+// Health Check
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -30,7 +33,10 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// MongoDB connection
+// Task Routes
+app.use("/api/tasks", taskRoutes);
+
+// MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
